@@ -1,5 +1,7 @@
 # Design Explorer
 
+![Design Explorer](app/assets/newplot.png)
+
 A powerful tool for visualizing and exploring design data, built with Python and Dash.
 
 ## Features
