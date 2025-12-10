@@ -28,8 +28,7 @@ from config import assets_path
      Output('selected-image-info', 'children', allow_duplicate=True),
      Output('selected-image-container', 'style', allow_duplicate=True),
      Output('main-images-container', 'style', allow_duplicate=True),
-     Output('images-grid', 'style', allow_duplicate=True),
-     Output('selected-image-container', 'style')],
+     Output('images-grid', 'style', allow_duplicate=True)],
     Input({'select_sample_project': ALL}, 'n_clicks'),
     prevent_initial_call=True
 )
@@ -82,7 +81,7 @@ def update_sample_project(n_clicks):
     selected_image_container_style = {}
     main_images_container_style = {}
     images_grid_style = {}
-    selected_image_container_style = {}
+
     if not img_column:
         main_images_container_style = {'display': 'none'}
 
@@ -90,4 +89,4 @@ def update_sample_project(n_clicks):
             labels, img_column, parameters, fig, select_sample_dropdown_label,
             sort_by_children, color_by_children, columns, selected_image_info,
             selected_image_container_style, main_images_container_style,
-            images_grid_style, selected_image_container_style)
+            images_grid_style)

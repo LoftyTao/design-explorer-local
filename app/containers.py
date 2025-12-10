@@ -5,7 +5,7 @@ import numpy as np
 import plotly.express as px
 from dash import html, dcc
 import dash_bootstrap_components as dbc
-import pollination_dash_io
+
 
 
 def logo_title(app) -> html.Div:
@@ -28,32 +28,37 @@ def info_box():
     info_box = html.Div(
         dbc.Row([
             dbc.Col(html.P(
-                'This app is a work in progress. The aim is to build an app '
-                'that can be used in an integrated workflow with Pollination '
-                'Fly and Pollination Cloud. Check out the video on the right '
-                'to see how Pollination Fly works.', className='justify-text'
-            )),
-            dbc.Col(html.Iframe(
-                src='https://www.youtube.com/embed/X7hrUg71scE?si=o7zuXoT6B2IUdnXY'
-            ))]
-        ),
+                'Design Explorer - Visualize and explore design data with ease. '\
+                '\n\nKey Features: '\
+                '\n• Analyze and compare design configurations '\
+                '\n• Color-code data points by parameters '\
+                '\n• Explore images based on design variables '\
+                '\n• Filter data with interactive parallel coordinates plot '\
+                '\n\nHow to Use: '\
+                '\n1. Select a sample project or upload your ZIP file '\
+                '\n2. Use Color-by to highlight data points '\
+                '\n3. Use Sort-by to organize images '\
+                '\n4. Click images to view details '\
+                '\n5. Use the parallel plot to filter results',
+                className='justify-text'
+            ))
+        ]),
         className='info-box',
     )
 
     return info_box
 
 
-def hello_user(api_key: pollination_dash_io.ApiKey, base_path: str):
-    """Function to create a Div for authentication of user."""
+def hello_user():
+    """Function to create a Div for authentication of user (Offline)."""
     hello_user_container = html.Div(children=[
-        html.Span(id='hello-user', children='Hi!', className='hi-user'),
-        pollination_dash_io.AuthUser(id='auth-user', basePath=base_path),
-        api_key.component,
+        html.Span(children='Offline Mode', className='hi-user'),
     ],
         id='hello',
         className='hello'
     )
     return hello_user_container
+
 
 
 def create_radio_container() -> html.Div:
@@ -63,7 +68,7 @@ def create_radio_container() -> html.Div:
             dbc.RadioItems(
                 options=[
                     {'label': 'Sample Project', 'value': False},
-                    {'label': 'Load from a Pollination project (Coming soon)', 'value': True},
+                    {'label': 'Load from local ZIP file', 'value': True},
                 ],
                 value=False,
                 id='radio-items-input',
@@ -78,20 +83,33 @@ def create_radio_container() -> html.Div:
 
 def select_pollination_project():
     """Function to create a Div for selecting a project on Pollination."""
+    select_project_label = html.Label(
+        children='Load from ZIP', className='color-by-label')
+    
     select_project_container = html.Div(
-        children=[html.Div(
-            id='select-account-container',
-            className='pollination-dropdown'),
-            html.Div(
-            id='select-project-container',
-            className='pollination-dropdown'),
-            html.Div(
-            id='select-artifact-container',
-            className='pollination-dropdown')],
+        children=[
+            select_project_label,
+            dcc.Upload(
+                id='upload-data',
+                children=html.Div([
+                    'Select ZIP File'
+                ]),
+                # Allow multiple files to be uploaded
+                multiple=False
+            ),
+            dcc.Dropdown(
+                id='select-uploaded-project-dropdown',
+                options=[],
+                placeholder='Select uploaded project',
+                style={'display': 'none', 'marginLeft': '1rem'} # Initially hidden
+            ),
+            html.Div(id='output-data-upload'),
+        ],
         id='select-pollination-project',
         className='select-pollination-project')
 
     return select_project_container
+
 
 
 def select_sample_project() -> html.Div:
@@ -113,7 +131,7 @@ def select_sample_project() -> html.Div:
         label='Daylight Factor',
         children=children,
         direction='end',
-        size='sm'
+        size='md'
     )
 
     select_sample_label = html.Label(
@@ -159,7 +177,7 @@ def create_color_by_children(parameters, color_by) -> List[html.Div]:
         label=parameters[color_by]['display_name'],
         children=children,
         direction='end',
-        size='sm'
+        size='md'
     )
 
     store = dcc.Store(id='color-by-column', data=color_by)
@@ -213,7 +231,7 @@ def create_sort_by_children(parameters, sort_by) -> html.Div:
         label=parameters[sort_by]['display_name'],
         children=children,
         direction='end',
-        size='sm'
+        size='md'
     )
 
     sort_by_store = dcc.Store(id='sort-by-column', data=sort_by)
@@ -249,16 +267,16 @@ def create_images_grid_children(
             html.Img(src=src.as_posix(),
                      id={'image': f'{record[img_column]}'},
                      className='image-grid',
-                     style={'border-color': border_color}
+                     style={'borderColor': border_color}
                      ),
             style={
-                'aspect-ratio': '1',
+                'aspectRatio': '1',
                 'width': '100%',
                 'height': '100%',
                 'position': 'relative',
                 'display': 'flex',
-                'align-items': 'center',
-                'justify-content': 'center',
+                'alignItems': 'center',
+                'justifyContent': 'center',
             }
         )
         children.append(image)
@@ -312,3 +330,4 @@ def create_sort_by_container(parameters, sort_by) -> html.Div:
     )
 
     return sort_container
+

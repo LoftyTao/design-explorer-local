@@ -16,12 +16,13 @@ import numpy as np
      Input('sort-by-column', 'data'),
      Input('sort-ascending', 'data'),
      State('img-column', 'data'),
-     State('project-folder', 'data')],
+     State('project-folder', 'data'),
+     State('selected-image-data', 'data')],
     prevent_initial_call=True,
 )
 def update_images_grid(
         active_records, df_records, color_by_column, sort_by_column,
-        sort_ascending, img_column, project_folder):
+        sort_ascending, img_column, project_folder, selected_image_data):
     """If the data in active-records is changed, the children will be updated
     in images-grid.
     
@@ -42,6 +43,12 @@ def update_images_grid(
         minimum, maximum = dff[color_by_column].min(
         ), dff[color_by_column].max()
     border_color = '#636EFA'
+    
+    # Get selected image filename if any
+    selected_image = None
+    if selected_image_data and isinstance(selected_image_data, list) and len(selected_image_data) > 0:
+        selected_image = selected_image_data[0].get(img_column)
+    
     if sort_by_column:
         dff = pd.DataFrame.from_records(active_records)
         sorted_df = dff.sort_values(
@@ -58,20 +65,25 @@ def update_images_grid(
                 'plasma', samplepoints=samplepoints
             )[0]
         src = project_folder.joinpath(d[img_column])
+        
+        # Check if this image is selected
+        is_selected = selected_image == d[img_column]
+        image_class = 'image-grid selected' if is_selected else 'image-grid'
+        
         image = html.Div(
             html.Img(src=src.as_posix(),
                      id={'image': f'{d[img_column]}'},
-                     className='image-grid',
-                     style={'border-color': border_color}
+                     className=image_class,
+                     style={'borderColor': border_color}
                      ),
             style={
-                'aspect-ratio': '1',
+                'aspectRatio': '1',
                 'width': '100%',
                 'height': '100%',
                 'position': 'relative',
                 'display': 'flex',
-                'align-items': 'center',
-                'justify-content': 'center',
+                'alignItems': 'center',
+                'justifyContent': 'center',
             }
         )
         images_div.append(image)
