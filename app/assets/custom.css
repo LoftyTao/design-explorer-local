@@ -515,11 +515,6 @@ body {
     text-align: left;
 }
 
-/* Hide Dash debug menu */
-.dash-debug-menu__outer {
-    display: none !important;
-}
-
 /* Custom scrollbar for all elements */
 ::-webkit-scrollbar {
     width: 10px;

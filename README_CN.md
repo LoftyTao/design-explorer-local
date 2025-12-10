@@ -24,8 +24,8 @@
 1. 克隆仓库：
 
 ```bash
-git clone https://github.com/yourusername/design-explorer.git
-cd design-explorer
+git clone https://github.com/LoftyTao/design-explorer-local.git
+cd design-explorer-local
 ```
 
 2. 创建虚拟环境（可选但推荐）：

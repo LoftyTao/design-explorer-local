@@ -24,8 +24,8 @@ A powerful tool for visualizing and exploring design data, built with Python and
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/design-explorer.git
-cd design-explorer
+git clone https://github.com/LoftyTao/design-explorer-local.git
+cd design-explorer-local
 ```
 
 2. Create a virtual environment (optional but recommended):
