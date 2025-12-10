@@ -16,7 +16,19 @@ def logo_title(app) -> html.Div:
                  src=app.get_asset_url('pollination.svg'),
                  className='logo'),
         html.Span(children='Design Explorer (WIP)',
-                  className='app-name')
+                  className='app-name'),
+        html.Div(children=[
+            html.A('GitHub Repository', href='https://github.com/LoftyTao/design-explorer-local', 
+                   target='_blank', className='github-link'),
+        ], className='github-container'),
+        html.Div(children=[
+            html.Span('Based on: '),
+            html.A('pollination-apps/design-explorer', href='https://github.com/pollination-apps/design-explorer', 
+                   target='_blank', className='acknowledge-link'),
+            html.Span(' and '),
+            html.A('tt-acm/DesignExplorer', href='https://tt-acm.github.io/DesignExplorer/', 
+                   target='_blank', className='acknowledge-link'),
+        ], className='acknowledge-container')
     ],
         className='logo-title'
     )
@@ -90,18 +102,57 @@ def select_pollination_project():
         children=[
             select_project_label,
             dcc.Upload(
-                id='upload-data',
-                children=html.Div([
-                    'Select ZIP File'
-                ]),
+                id='upload-data-component',
+                children=html.Span(
+                    children='Select ZIP File',
+                    style={
+                        'color': 'white',
+                        'fontSize': '0.9rem',
+                        'fontWeight': '500',
+                        'textAlign': 'center',
+                        'display': 'block'
+                    }
+                ),
                 # Allow multiple files to be uploaded
-                multiple=False
+                multiple=False,
+                style={
+                    'width': '100%',
+                    'height': 'auto',
+                    'cursor': 'pointer',
+                    'margin': '0',
+                    'padding': '0.5rem 1rem',
+                    'border': 'none',
+                    'borderRadius': '0.375rem',
+                    'outline': 'none',
+                    'boxSizing': 'border-box',
+                    'backgroundColor': '#3b82f6',
+                    'transition': 'all 0.2s ease',
+                    'display': 'flex',
+                    'alignItems': 'center',
+                    'justifyContent': 'center'
+                }
+            ),
+            html.Div(
+                children=[
+                    html.Small(
+                        children=[
+                            'Tip: Use ',
+                            html.A('Pollination Fly', href='https://docs.pollination.solutions/user-manual/grasshopper-plugin/grasshopper-user-interface/3_parametric/fly', target='_blank'),
+                            ' and ',
+                            html.A('Fly_ID', href='https://docs.pollination.solutions/user-manual/grasshopper-plugin/grasshopper-user-interface/3_parametric/fly_id', target='_blank'),
+                            ' components to create associated files that meet the program requirements, ',
+                            'then package them into a ZIP file yourself.'
+                        ],
+                        className='upload-tip'
+                    )
+                ],
+                className='upload-tip-container'
             ),
             dcc.Dropdown(
                 id='select-uploaded-project-dropdown',
                 options=[],
                 placeholder='Select uploaded project',
-                style={'display': 'none', 'marginLeft': '1rem'} # Initially hidden
+                style={'display': 'none'} # Initially hidden
             ),
             html.Div(id='output-data-upload'),
         ],

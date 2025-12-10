@@ -36,8 +36,8 @@ def toggle_input_method(load_from_zip):
      Output('select-uploaded-project-dropdown', 'options'),
      Output('select-uploaded-project-dropdown', 'value'),
      Output('select-uploaded-project-dropdown', 'style')],
-    [Input('upload-data', 'contents')],
-    [State('upload-data', 'filename'),
+    [Input('upload-data-component', 'contents')],
+    [State('upload-data-component', 'filename'),
      State('uploaded-projects-store', 'data')],
     prevent_initial_call=True
 )

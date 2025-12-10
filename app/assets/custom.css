@@ -11,11 +11,18 @@ body {
 /* Logo and title */
 .logo-title {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
     padding: 1rem 0;
     margin-bottom: 1.5rem;
     border-bottom: 2px solid #e2e8f0;
+}
+
+.logo-title > div {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .logo {
@@ -28,6 +35,51 @@ body {
     font-weight: 700;
     color: #1e293b;
     letter-spacing: -0.025em;
+}
+
+/* GitHub link */
+.github-container {
+    margin-top: 0.5rem;
+    margin-left: 0;
+}
+
+.github-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.github-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* Acknowledgment */
+.acknowledge-container {
+    margin-top: 0.25rem;
+    margin-left: 0;
+    font-size: 0.8rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.acknowledge-link {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.acknowledge-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
 }
 
 /* Info box */
@@ -155,7 +207,7 @@ body {
 }
 
 /* Upload component */
-#upload-data {
+#upload-data-component {
     border: none;
     border-radius: 0.375rem;
     transition: all 0.2s ease;
@@ -173,39 +225,65 @@ body {
     margin: 0;
     max-width: none;
     background-image: none;
+    position: relative;
+    overflow: hidden;
 }
 
-#upload-data:hover {
+#upload-data-component:hover {
     background-color: #2563eb;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     transform: translateY(-1px);
 }
 
-#upload-data:active {
+#upload-data-component:active {
     transform: translateY(0);
 }
 
-#upload-data .drag-drop-text {
+#upload-data-component .drag-drop-text {
     text-align: center;
 }
 
-#upload-data a {
+#upload-data-component a {
     color: white;
     text-decoration: none;
     font-weight: 600;
     transition: all 0.2s ease;
 }
 
-#upload-data a:hover {
+#upload-data-component a:hover {
     color: white;
     text-decoration: underline;
+}
+
+/* Make entire upload area clickable */
+#upload-data-component input[type="file"] {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0 !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    pointer-events: auto !important;
+}
+
+#upload-data-component > span {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
 }
 
 /* Upload container */
 .select-pollination-project {
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
     width: 100%;
     margin-bottom: 1.5rem;
     padding: 1.5rem;
@@ -216,6 +294,40 @@ body {
     box-sizing: border-box;
     justify-content: flex-start;
     text-align: left;
+}
+
+/* Upload tip container */
+.upload-tip-container {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+/* Upload tip */
+.upload-tip {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-left: 0;
+    margin-top: 0;
+    display: block;
+    width: 100%;
+    line-height: 1.5;
+    padding: 0.5rem;
+    background-color: #f8fafc;
+    border-radius: 0.375rem;
+    border-left: 3px solid #3b82f6;
+}
+
+.upload-tip a {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.upload-tip a:hover {
+    color: #2563eb;
+    text-decoration: underline;
 }
 
 /* Select sample */
@@ -513,6 +625,11 @@ body {
 .main-images-container,
 .radio-items {
     text-align: left;
+}
+
+/* Hide Dash debug menu */
+.dash-debug-menu__outer {
+    display: none !important;
 }
 
 /* Custom scrollbar for all elements */
