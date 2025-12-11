@@ -48,7 +48,7 @@ def load_sample_project(sample_identifier: str = sample_alias['daylight-factor']
     sorted_df = df.sort_values(by=sort_by, ascending=False)
     sorted_df_records = sorted_df.to_dict('records')
     images_grid_children = create_images_grid_children(
-        sorted_df_records, color_by, minimum, maximum, img_column, project_folder)
+        sorted_df_records, color_by, minimum, maximum, img_column, project_folder, 'Original')
 
     columns = []
     for value in parameters.values():

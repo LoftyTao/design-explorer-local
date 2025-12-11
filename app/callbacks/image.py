@@ -7,6 +7,8 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
+from color_schemes import get_color_schemes, sample_color_scheme
+
 
 @dash.callback(
     Output('images-grid', 'children', allow_duplicate=True),
@@ -15,6 +17,7 @@ import numpy as np
      Input('color-by-column', 'data'),
      Input('sort-by-column', 'data'),
      Input('sort-ascending', 'data'),
+     Input('color-scheme', 'data'),
      State('img-column', 'data'),
      State('project-folder', 'data'),
      State('selected-image-data', 'data')],
@@ -22,7 +25,7 @@ import numpy as np
 )
 def update_images_grid(
         active_records, df_records, color_by_column, sort_by_column,
-        sort_ascending, img_column, project_folder, selected_image_data):
+        sort_ascending, color_scheme, img_column, project_folder, selected_image_data):
     """If the data in active-records is changed, the children will be updated
     in images-grid.
     
@@ -37,11 +40,15 @@ def update_images_grid(
     """
     if img_column is None:
         return []
+    
     images_div = []
+    minimum = None
+    maximum = None
+    
     if color_by_column:
         dff = pd.DataFrame.from_records(df_records)
-        minimum, maximum = dff[color_by_column].min(
-        ), dff[color_by_column].max()
+        minimum, maximum = dff[color_by_column].min(), dff[color_by_column].max()
+    
     border_color = '#636EFA'
     
     # Get selected image filename if any
@@ -54,16 +61,16 @@ def update_images_grid(
         sorted_df = dff.sort_values(
             by=sort_by_column, ascending=sort_ascending)
         active_records = sorted_df.to_dict('records')
+    
     project_folder = Path(project_folder)
+    color_schemes = get_color_schemes()
+    current_scheme = color_schemes.get(color_scheme, color_schemes['Original Ladybug'])
+    
     for d in active_records:
         if color_by_column:
-            samplepoints = np.interp(
-                d[color_by_column],
-                [minimum, maximum],
-                [0, 1])
-            border_color = px.colors.sample_colorscale(
-                'plasma', samplepoints=samplepoints
-            )[0]
+            # Use the selected color scheme to get border color
+            border_color = sample_color_scheme(current_scheme, d[color_by_column], minimum, maximum)
+        
         src = project_folder.joinpath(d[img_column])
         
         # Check if this image is selected

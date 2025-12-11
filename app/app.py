@@ -21,7 +21,12 @@ from helper import find_free_port, print_startup_banner
 
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.MATERIA, dbc.icons.BOOTSTRAP],
+    external_stylesheets=[
+        dbc.themes.MATERIA, 
+        dbc.icons.BOOTSTRAP,
+        {'href': '/assets/custom.css?version=2.0', 'rel': 'stylesheet', 'type': 'text/css'}
+    ],
+    assets_ignore=r'^.*\.ttf$',  # Ignore font files to let Flask serve them directly
     suppress_callback_exceptions=True
 )
 app.title = 'Design Explorer'
@@ -38,6 +43,12 @@ def serve_image(path):
 @server.route('/uploaded/<path:path>')
 def serve_uploaded(path):
     return send_from_directory(upload_path, path)
+
+# Serve font files directly to ensure proper access
+@server.route('/assets/font/<path:filename>')
+def serve_font(filename):
+    font_dir = Path(__file__).parent.joinpath('assets', 'font')
+    return send_from_directory(font_dir, filename)
 
 
 parameters, color_by, fig, images_grid_children, sort_by, project_folder, \
