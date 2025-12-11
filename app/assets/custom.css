@@ -1,11 +1,77 @@
-/* Custom CSS for Design Explorer */
+/* Custom CSS for Design Explorer - Version 2.0 */
+
+/* Force browser to reload fonts by adding cache-busting */
+
+/* Font imports */
+@font-face {
+    font-family: 'LXGW Bright GB';
+    src: url('/assets/font/LXGWBrightGB-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'LXGW Bright GB';
+    src: url('/assets/font/LXGWBrightGB-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'LXGW Bright GB';
+    src: url('/assets/font/LXGWBrightGB-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'LXGW Bright GB';
+    src: url('/assets/font/LXGWBrightGB-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'LXGW Bright GB';
+    src: url('/assets/font/LXGWBrightGB-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'LXGW Bright GB';
+    src: url('/assets/font/LXGWBrightGB-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
 
 /* Global styles */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'LXGW Bright GB', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
     background-color: #f8fafc;
     color: #1e293b;
     line-height: 1.6;
+}
+
+/* Debug: Add a border to all div elements to confirm CSS is loaded */
+div {
+    /* border: 1px solid red !important; */
+}
+
+/* Apply font to all text elements */
+* {
+    font-family: inherit !important;
+}
+
+/* Ensure specific elements use the font */
+p, span, div, a, button, input, select, label, h1, h2, h3, h4, h5, h6, th, td {
+    font-family: 'LXGW Bright GB', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 /* Logo and title */
@@ -165,6 +231,18 @@ body {
     box-sizing: border-box;
     justify-content: flex-start;
     text-align: left;
+    flex-wrap: wrap;
+}
+
+/* Ensure color scheme dropdown aligns properly */
+#color-scheme-dropdown {
+    margin: 0;
+}
+
+/* Adjust label margin for better spacing */
+.color-by-label {
+    margin-bottom: 0;
+    white-space: nowrap;
 }
 
 /* Dropdown menus */

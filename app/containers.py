@@ -5,6 +5,7 @@ import numpy as np
 import plotly.express as px
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+from color_schemes import get_color_schemes, sample_color_scheme
 
 
 
@@ -15,10 +16,14 @@ def logo_title(app) -> html.Div:
         html.Img(id='pollination-logo',
                  src=app.get_asset_url('pollination.svg'),
                  className='logo'),
-        html.Span(children='Design Explorer (WIP)',
+        html.Span(children='Design Explorer (Local)',
                   className='app-name'),
         html.Div(children=[
             html.A('GitHub Repository', href='https://github.com/LoftyTao/design-explorer-local', 
+                   target='_blank', className='github-link'),
+            html.A('Tutorial', href='https://www.youtube.com/watch?v=X7hrUg71scE&t=28s', 
+                   target='_blank', className='github-link'),
+            html.A('教程视频', href='https://www.bilibili.com/video/BV16MxneEESV/?spm_id_from=333.1387.homepage.video_card.click&vd_source=75eb992bb7880d408ee082a7978f2d8a', 
                    target='_blank', className='github-link'),
         ], className='github-container'),
         html.Div(children=[
@@ -38,23 +43,40 @@ def logo_title(app) -> html.Div:
 
 def info_box():
     info_box = html.Div(
-        dbc.Row([
-            dbc.Col(html.P(
-                'Design Explorer - Visualize and explore design data with ease. '\
-                '\n\nKey Features: '\
-                '\n• Analyze and compare design configurations '\
-                '\n• Color-code data points by parameters '\
-                '\n• Explore images based on design variables '\
-                '\n• Filter data with interactive parallel coordinates plot '\
-                '\n\nHow to Use: '\
-                '\n1. Select a sample project or upload your ZIP file '\
-                '\n2. Use Color-by to highlight data points '\
-                '\n3. Use Sort-by to organize images '\
-                '\n4. Click images to view details '\
-                '\n5. Use the parallel plot to filter results',
-                className='justify-text'
-            ))
-        ]),
+        [
+            # Application description on separate line
+            html.P(
+                'Design Explorer - Visualize and explore design data with ease.',
+                className='justify-text mb-4'
+            ),
+            
+            # Two-column layout for features and usage
+            dbc.Row([
+                # First column: Key Features
+                dbc.Col([
+                    html.P(
+                        'Key Features: '
+                        '\n• Analyze and compare design configurations '
+                        '\n• Color-code data points by parameters '
+                        '\n• Explore images based on design variables '
+                        '\n• Filter data with interactive parallel coordinates plot',
+                        className='justify-text'
+                    )
+                ], md=6),
+                # Second column: How to Use
+                dbc.Col([
+                    html.P(
+                        'How to Use: '
+                        '\n1. Select a sample project or upload your ZIP file '
+                        '\n2. Use Color-by to highlight data points '
+                        '\n3. Use Sort-by to organize images '
+                        '\n4. Click images to view details '
+                        '\n5. Use the parallel plot to filter results',
+                        className='justify-text'
+                    )
+                ], md=6)
+            ])
+        ],
         className='info-box',
     )
 
@@ -235,7 +257,24 @@ def create_color_by_children(parameters, color_by) -> List[html.Div]:
     color_by_label = html.Label(
         children='Color by', className='color-by-label')
 
-    children = [color_by_label, dropdown_menu, store]
+    # Add color scheme selection
+    color_scheme_label = html.Label(
+        children='Color scheme', className='color-by-label')
+    color_scheme_dropdown = dbc.DropdownMenu(
+        id='color-scheme-dropdown',
+        label='Original',
+        children=[
+            dbc.DropdownMenuItem('Original', id={'color_scheme': 'Original'}),
+            dbc.DropdownMenuItem('Nuanced', id={'color_scheme': 'Nuanced'}),
+            dbc.DropdownMenuItem('Multi-Colored', id={'color_scheme': 'Multi-Colored'}),
+            dbc.DropdownMenuItem('Parula', id={'color_scheme': 'Parula'}),
+        ],
+        direction='end',
+        size='md'
+    )
+    color_scheme_store = dcc.Store(id='color-scheme', data='Original')
+
+    children = [color_by_label, dropdown_menu, color_scheme_label, color_scheme_dropdown, store, color_scheme_store]
 
     return children
 
@@ -305,14 +344,15 @@ def create_sort_by_children(parameters, sort_by) -> html.Div:
 
 def create_images_grid_children(
         sorted_df_records, color_by, minimum, maximum, img_column,
-        project_folder) -> List[html.Div]:
+        project_folder, color_scheme='Original') -> List[html.Div]:
     children = []
     project_folder = Path(project_folder)
+    color_schemes = get_color_schemes()
+    current_scheme = color_schemes.get(color_scheme, color_schemes['Original'])
+    
     for record in sorted_df_records:
-        samplepoints = np.interp(record[color_by], [minimum, maximum], [0, 1])
-        border_color = px.colors.sample_colorscale(
-            'plasma', samplepoints=samplepoints
-        )[0]
+        # Get the border color based on the selected color scheme
+        border_color = sample_color_scheme(current_scheme, record[color_by], minimum, maximum)
         src = project_folder.joinpath(record[img_column])
         image = html.Div(
             html.Img(src=src.as_posix(),
