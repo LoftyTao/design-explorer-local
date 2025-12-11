@@ -14,6 +14,9 @@ from samples import load_sample_project
 # import callback functions
 from callbacks import color, image, records, sample, sort, table, upload
 
+#
+from waitress import serve
+from helper import find_free_port, print_startup_banner
 
 
 app = dash.Dash(
@@ -116,7 +119,11 @@ app.layout = dbc.Container([
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Find an available port
+    port = find_free_port(8050)
+    print_startup_banner(port=port)
+    # Run app, use WSGI production server instead of Flask
+    serve(app, host="127.0.0.1", port=port)
 
 
 
