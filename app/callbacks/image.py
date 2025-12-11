@@ -64,7 +64,7 @@ def update_images_grid(
     
     project_folder = Path(project_folder)
     color_schemes = get_color_schemes()
-    current_scheme = color_schemes.get(color_scheme, color_schemes['Original Ladybug'])
+    current_scheme = color_schemes.get(color_scheme, color_schemes['Original'])
     
     for d in active_records:
         if color_by_column:
