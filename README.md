@@ -43,7 +43,7 @@ source venv/bin/activate
 3. Install the required dependencies:
 
 ```bash
-pip install -r requirements.txt
+pip install -r app/requirements.txt
 ```
 
 ## Usage
@@ -56,6 +56,9 @@ python app.py
 ```
 
 The application will start on http://127.0.0.1:8050/
+
+> If the default port 8050 is in use, the tool will search for the next available port (e.g., 8051).
+> See the message in the terminal window.
 
 ### Using Design Explorer
 
@@ -137,6 +140,12 @@ design-explorer/
 # Run tests (if available)
 pytest
 ```
+
+## How to Build
+
+1. `pip install -r app/requirements.txt`
+2. `pip install pyinstaller`
+3. `python app/build.py`
 
 ## Contributing
 

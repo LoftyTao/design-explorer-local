@@ -28,3 +28,8 @@ model.html
 venv/*
 .venv/*
 app/pollination/*
+
+.idea
+dist
+build
+*.spec
