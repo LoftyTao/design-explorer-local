@@ -15,7 +15,6 @@ from samples import load_sample_project
 from callbacks import color, image, records, sample, sort, table, upload
 
 #
-from waitress import serve
 from helper import find_free_port, print_startup_banner
 
 
@@ -133,8 +132,8 @@ if __name__ == '__main__':
     # Find an available port
     port = find_free_port(8050)
     print_startup_banner(port=port)
-    # Run app, use WSGI production server instead of Flask
-    serve(app, host="127.0.0.1", port=port)
+    # Run app using Flask development server
+    app.run(debug=False, host="127.0.0.1", port=port)
 
 
 
