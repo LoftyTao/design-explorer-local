@@ -2,6 +2,8 @@
 
 A powerful tool for visualizing and exploring design data, built with Python and Dash.
 
+![Plot](app/assets/newplot.png)
+
 ## Features
 
 - **Interactive Data Visualization**: Explore design data through parallel coordinates plots
