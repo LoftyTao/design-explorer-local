@@ -579,6 +579,48 @@ p, span, div, a, button, input, select, label, h1, h2, h3, h4, h5, h6, th, td {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
+/* Image navigation buttons */
+.image-navigation-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.image-navigation-buttons .btn {
+    min-width: 100px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.image-navigation-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.image-navigation-buttons .btn:active {
+    transform: translateY(0);
+}
+
+/* Image group display */
+.image-group-display-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background-color: #f8fafc;
+    border-radius: 0.375rem;
+    border: 1px solid #e2e8f0;
+}
+
+.image-group-badge {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.75rem;
+}
+
 /* Table */
 .dash-table-container {
     margin-top: 1.5rem;

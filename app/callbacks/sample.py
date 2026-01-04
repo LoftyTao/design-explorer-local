@@ -8,7 +8,7 @@ import plotly.express as px
 from containers import create_color_by_children, create_sort_by_children
 from helper import process_dataframe
 from samples import sample_alias
-from config import assets_path
+from config import assets_path, samples_path
 
 
 @dash.callback(
@@ -19,6 +19,7 @@ from config import assets_path
      Output('df-columns', 'data', allow_duplicate=True),
      Output('labels', 'data', allow_duplicate=True),
      Output('img-column', 'data', allow_duplicate=True),
+     Output('image-columns', 'data', allow_duplicate=True),
      Output('parameters', 'data', allow_duplicate=True),
      Output('parallel-coordinates', 'figure', allow_duplicate=True),
      Output('select-sample-dropdown', 'label', allow_duplicate=True),
@@ -28,17 +29,19 @@ from config import assets_path
      Output('selected-image-info', 'children', allow_duplicate=True),
      Output('selected-image-container', 'style', allow_duplicate=True),
      Output('main-images-container', 'style', allow_duplicate=True),
-     Output('images-grid', 'style', allow_duplicate=True)],
+     Output('images-grid', 'style', allow_duplicate=True),
+     Output('selected-image-group', 'data', allow_duplicate=True),
+     Output('image-navigation-buttons', 'children', allow_duplicate=True)],
     Input({'select_sample_project': ALL}, 'n_clicks'),
     prevent_initial_call=True
 )
 def update_sample_project(n_clicks):
-    """If a click is registered in the sort by dropdown, the data is updated in
-    sort-by-column, and the label is updated in sort-by-dropdown."""
+    """If a click is registered in sort by dropdown, data is updated in
+    sort-by-column, and label is updated in sort-by-dropdown."""
     sample_project = ctx.triggered_id.select_sample_project
     project_folder = f'assets/samples/{sample_project}'
     select_sample_dropdown_label = sample_alias[sample_project]['display_name']
-    csv = assets_path.joinpath('samples', sample_project, 'data.csv')
+    csv = samples_path.joinpath(sample_project, 'data.csv')
     dff = pd.read_csv(csv)
     df_records = dff.to_dict('records')
 
@@ -58,8 +61,10 @@ def update_sample_project(n_clicks):
     img_columns = dff.filter(regex=f'^img:').columns
     if img_columns.empty:
         img_column = None
+        img_columns_list = []
     else:
         img_column = img_columns[0]
+        img_columns_list = img_columns.tolist()
 
     columns = []
     for value in parameters.values():
@@ -85,8 +90,16 @@ def update_sample_project(n_clicks):
     if not img_column:
         main_images_container_style = {'display': 'none'}
 
+    # Set image group dropdown label and selected group
+    if img_columns_list:
+        selected_image_group = img_columns_list[0]
+        image_navigation_buttons = None
+    else:
+        selected_image_group = None
+        image_navigation_buttons = None
+
     return (project_folder, df_records, df_records, active_filters, dff.columns,
-            labels, img_column, parameters, fig, select_sample_dropdown_label,
+            labels, img_column, img_columns_list, parameters, fig, select_sample_dropdown_label,
             sort_by_children, color_by_children, columns, selected_image_info,
             selected_image_container_style, main_images_container_style,
-            images_grid_style)
+            images_grid_style, selected_image_group, image_navigation_buttons)

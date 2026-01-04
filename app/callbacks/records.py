@@ -8,10 +8,12 @@ import pandas as pd
 @dash.callback(
     Output('active-records', 'data', allow_duplicate=True),
     [Input('active-filters', 'data'),
+     Input('sort-by-column', 'data'),
+     Input('sort-ascending', 'data'),
      State('df', 'data')],
     prevent_initial_call=True,
 )
-def update_active_records(data, df_records):
+def update_active_records(data, sort_by_column, sort_ascending, df_records):
     """If the data in active-filters is changed, the data will be updated in
     active-records.
     
@@ -50,6 +52,12 @@ def update_active_records(data, df_records):
                 else:
                     # there is one selection
                     dff = dff[dff[col].between(rng[0], rng[1])]
+        
+        # Apply sorting if sort_by_column is specified
+        if sort_by_column and sort_by_column in dff.columns:
+            ascending = sort_ascending if sort_ascending is not None else False
+            dff = dff.sort_values(by=sort_by_column, ascending=ascending)
+        
         return dff.to_dict('records')
     return dash.no_update
 
@@ -69,4 +77,48 @@ def update_active_filters(data, df_columns):
         new_data = Patch()
         new_data[col] = data[0][key]
         return new_data
+    return dash.no_update
+
+
+@dash.callback(
+    Output('active-records', 'data', allow_duplicate=True),
+    [Input('sort-by-column', 'data'),
+     Input('sort-ascending', 'data'),
+     State('active-filters', 'data'),
+     State('df', 'data')],
+    prevent_initial_call=True,
+)
+def update_records_on_sort(sort_by_column, sort_ascending, active_filters, df_records):
+    """Update active-records when sort options are changed."""
+    if active_filters:
+        dff = pd.DataFrame.from_records(df_records)
+        for col in active_filters:
+            if active_filters[col]:
+                # there is a selection, i.e., the value is not None
+                rng = active_filters[col][0]
+                if isinstance(rng[0], list):
+                    # if multiple choices combine df
+                    dff3 = pd.DataFrame(columns=dff.columns)
+                    for i in rng:
+                        dff2 = dff[dff[col].between(i[0], i[1])]
+                        dff3 = pd.concat([dff3, dff2])
+                    dff = dff3
+                else:
+                    # there is one selection
+                    dff = dff[dff[col].between(rng[0], rng[1])]
+        
+        # Apply sorting if sort_by_column is specified
+        if sort_by_column and sort_by_column in dff.columns:
+            ascending = sort_ascending if sort_ascending is not None else False
+            dff = dff.sort_values(by=sort_by_column, ascending=ascending)
+        
+        return dff.to_dict('records')
+    
+    # If no filters, apply sorting to all records
+    dff = pd.DataFrame.from_records(df_records)
+    if sort_by_column and sort_by_column in dff.columns:
+        ascending = sort_ascending if sort_ascending is not None else False
+        dff = dff.sort_values(by=sort_by_column, ascending=ascending)
+        return dff.to_dict('records')
+    
     return dash.no_update

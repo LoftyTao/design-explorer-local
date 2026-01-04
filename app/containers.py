@@ -185,23 +185,23 @@ def select_pollination_project():
 
 
 
-def select_sample_project() -> html.Div:
+def select_sample_project(sample_alias=None) -> html.Div:
     """Function to create the Div that contains the options for coloring the
     parallel coordinates by a column."""
+    if sample_alias is None:
+        from samples import sample_alias
+    
     children = []
-    children.append(
-        dbc.DropdownMenuItem(
-            'Daylight Factor',
-            id={'select_sample_project': 'daylight-factor'}))
-    children.append(dbc.DropdownMenuItem(
-        'Box', id={'select_sample_project': 'box'}))
-    children.append(
-        dbc.DropdownMenuItem(
-            'Box Without Images',
-            id={'select_sample_project': 'box-without-img'}))
+    for sample_id, sample_info in sample_alias.items():
+        children.append(
+            dbc.DropdownMenuItem(
+                sample_info['display_name'],
+                id={'select_sample_project': sample_id}))
+    
+    default_sample = list(sample_alias.values())[0]['display_name']
     dropdown_menu = dbc.DropdownMenu(
         id='select-sample-dropdown',
-        label='Daylight Factor',
+        label=default_sample,
         children=children,
         direction='end',
         size='md'
@@ -346,16 +346,21 @@ def create_images_grid_children(
         sorted_df_records, color_by, minimum, maximum, img_column,
         project_folder, color_scheme='Original') -> List[html.Div]:
     children = []
-    project_folder = Path(project_folder)
     color_schemes = get_color_schemes()
     current_scheme = color_schemes.get(color_scheme, color_schemes['Original'])
     
     for record in sorted_df_records:
         # Get the border color based on the selected color scheme
         border_color = sample_color_scheme(current_scheme, record[color_by], minimum, maximum)
-        src = project_folder.joinpath(record[img_column])
+        
+        # Handle both string and Path objects for project_folder
+        if isinstance(project_folder, str):
+            src = f"{project_folder}/{record[img_column]}"
+        else:
+            src = project_folder.joinpath(record[img_column]).as_posix()
+        
         image = html.Div(
-            html.Img(src=src.as_posix(),
+            html.Img(src=src,
                      id={'image': f'{record[img_column]}'},
                      className='image-grid',
                      style={'borderColor': border_color}
@@ -394,7 +399,13 @@ def create_images_container(images_div, parameters, sort_by) -> html.Div:
                       id='selected-image',
                       className='selected-image')],
                   id='selected-image-wrapper',
-                  className='selected-image-wrapper')],
+                  className='selected-image-wrapper'),
+              html.Div(
+                  id='image-group-display',
+                  className='image-group-display'),
+              html.Div(
+                  id='image-navigation-buttons',
+                  className='image-navigation-buttons')],
              id='selected-image-container',
              className='selected-image-container'),
          html.Div(

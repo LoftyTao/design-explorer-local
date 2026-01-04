@@ -9,7 +9,7 @@ from containers import logo_title, info_box, hello_user, create_radio_container,
     select_pollination_project, select_sample_project, create_color_by_container, \
     create_images_container
 from config import assets_path, upload_path, static_path
-from samples import load_sample_project
+from samples import load_sample_project, sample_alias
 
 # import callback functions
 from callbacks import color, image, records, sample, sort, table, upload
@@ -49,10 +49,16 @@ def serve_font(filename):
     font_dir = Path(__file__).parent.joinpath('assets', 'font')
     return send_from_directory(font_dir, filename)
 
+# Serve sample files directly from assets/samples to avoid Dash caching and reload issues
+@server.route('/assets/samples/<path:path>')
+def serve_samples(path):
+    samples_dir = assets_path.joinpath('samples')
+    return send_from_directory(samples_dir, path)
+
 
 parameters, color_by, fig, images_grid_children, sort_by, project_folder, \
-df_records, df, labels, img_column, columns = load_sample_project(
-    'daylight-factor'
+df_records, df, labels, img_column, columns, image_columns = load_sample_project(
+    list(sample_alias.keys())[0]
 )
 
 app.layout = dbc.Container([
@@ -69,7 +75,7 @@ app.layout = dbc.Container([
         dbc.CardBody([
             create_radio_container(),
             html.Div([
-                select_sample_project(),
+                select_sample_project(sample_alias),
                 select_pollination_project(),
             ], className='mt-3'),
         ])
@@ -120,6 +126,8 @@ app.layout = dbc.Container([
     dcc.Store(id='labels', data=labels),
     dcc.Store(id='parameters', data=parameters),
     dcc.Store(id='img-column', data=img_column),
+    dcc.Store(id='image-columns', data=image_columns),
+    dcc.Store(id='selected-image-group', data=img_column),
     dcc.Store(id='active-filters', data={}),
     dcc.Store(id='active-records', data=df_records),
     dcc.Store(id='uploaded-projects-store', data=[]),

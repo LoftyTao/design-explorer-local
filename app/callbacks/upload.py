@@ -109,6 +109,7 @@ def process_upload(contents, filename, existing_projects):
      Output('df-columns', 'data', allow_duplicate=True),
      Output('labels', 'data', allow_duplicate=True),
      Output('img-column', 'data', allow_duplicate=True),
+     Output('image-columns', 'data', allow_duplicate=True),
      Output('parameters', 'data', allow_duplicate=True),
      Output('parallel-coordinates', 'figure', allow_duplicate=True),
      Output('sort-by', 'children', allow_duplicate=True),
@@ -117,7 +118,9 @@ def process_upload(contents, filename, existing_projects):
      Output('selected-image-info', 'children', allow_duplicate=True),
      Output('selected-image-container', 'style', allow_duplicate=True),
      Output('main-images-container', 'style', allow_duplicate=True),
-     Output('images-grid', 'style', allow_duplicate=True)],
+     Output('images-grid', 'style', allow_duplicate=True),
+     Output('selected-image-group', 'data', allow_duplicate=True),
+     Output('image-navigation-buttons', 'children', allow_duplicate=True)],
     [Input('select-uploaded-project-dropdown', 'value')],
     prevent_initial_call=True
 )
@@ -140,13 +143,13 @@ def load_uploaded_project_data(project_id):
             
     # Set project folder for serving static files
     # The app serves /static/uploaded at static/uploaded
-    # We need the path relative to static/uploaded for the URL construction if we used a simple static route
-    # But here we likely need the full path that the frontend can use.
+    # We need to path relative to static/uploaded for URL construction if we used a simple static route
+    # But here we likely need to full path that frontend can use.
     # If app.py serves '/static/uploaded' -> 'app/static/uploaded'
     # Then project_folder should be 'static/uploaded/{project_id}' (+ subdirs if any)
     
     # Let's find relative path from upload_path to csv_file's directory
-    # This handles the case where data.csv is inside a subfolder in the zip
+    # This handles the case where data.csv is inside a subfolder in zip
     rel_path = csv_file.parent.relative_to(upload_path)
     project_folder = f'uploaded/{rel_path.as_posix()}'
 
@@ -169,8 +172,10 @@ def load_uploaded_project_data(project_id):
     img_columns = dff.filter(regex=f'^img:').columns
     if img_columns.empty:
         img_column = None
+        img_columns_list = []
     else:
         img_column = img_columns[0]
+        img_columns_list = img_columns.tolist()
 
     columns = []
     for value in parameters.values():
@@ -196,11 +201,19 @@ def load_uploaded_project_data(project_id):
     if not img_column:
         main_images_container_style = {'display': 'none'} # Or hidden
 
+    # Set image group dropdown label and selected group
+    if img_columns_list:
+        selected_image_group = img_columns_list[0]
+        image_navigation_buttons = None
+    else:
+        selected_image_group = None
+        image_navigation_buttons = None
+
     return (project_folder, df_records, df_records, active_filters, list(dff.columns),
-            labels, img_column, parameters, fig,
+            labels, img_column, img_columns_list, parameters, fig,
             sort_by_children, color_by_children, columns, selected_image_info,
             selected_image_container_style, main_images_container_style,
-            images_grid_style)
+            images_grid_style, selected_image_group, image_navigation_buttons)
 
 
 
