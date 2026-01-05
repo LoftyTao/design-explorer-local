@@ -33,3 +33,4 @@ app/pollination/*
 dist
 build
 *.spec
+/app/static/uploaded
