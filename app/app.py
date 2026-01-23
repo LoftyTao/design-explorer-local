@@ -12,7 +12,7 @@ from config import assets_path, upload_path, static_path
 from samples import load_sample_project, sample_alias
 
 # import callback functions
-from callbacks import color, image, records, sample, sort, table, upload
+from callbacks import color, image, records, sample, sort, table, upload, highlight
 
 #
 from helper import find_free_port, print_startup_banner
